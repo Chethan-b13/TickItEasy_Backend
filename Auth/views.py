@@ -1,21 +1,36 @@
 from rest_framework import generics,permissions
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import RegisterSerializer, UserSerializer
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
-class RegisterApi(generics.GenericAPIView):
+class RegisterApi(APIView):
     permission_classes = (permissions.AllowAny,)
-    serializer_class = RegisterSerializer
 
     def post(self,request,*args,**kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        return Response({
-            "user": UserSerializer(user,context=self.get_serializer_context()).data,
-            "message": "User Created Successfully.  Now perform Login to get your token",
-        })
+        data = self.request.data
+        email = data['email']
+        password1 = data['password1']
+        password2 = data['password2']
+
+        try:
+            if password1 == password2:
+                if User.objects.filter(email=email).exists():
+                    return Response({'Error':'User with this email already exist'})
+                else:
+                    if len(password1) < 6 :
+                        return Response({'Error':"Password Length should be greater than 6."})
+                    else:
+                        user = User.objects.create_user(email=email,password=password1)
+                        user.save()
+                        return Response({'Success':"User Created SuccessFully."})
+            else:
+                return Response({'Error':"Password didn't match."})       
+        except Exception as ex:
+            return Response({'Error':str(ex)})
 
 class MakeAdminApi(generics.GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)

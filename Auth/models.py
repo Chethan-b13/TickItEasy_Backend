@@ -1,11 +1,35 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser,BaseUserManager,PermissionsMixin
 
 # Create your models here.
-class User(AbstractUser):
-    USERNAME_FIELD = 'email'
-    email = models.EmailField(('email address'), unique=True) # changes email to unique and blank to false
+
+class UserManager(BaseUserManager):
+    def create_user(self,email,password=None):
+        if not email:
+            raise ValueError('Users must have an email address')
+        email = self.normalize_email(email)
+        user = self.model(email=email)
+
+        user.set_password(password)
+        user.save()
+
+        return user
+    
+
+    def create_superuser(self,email,password):
+        user = self.create_user(email,password)
+        user.is_superuser = True
+        user.is_staff = True
+        user.save()
+
+        return user
+class User(AbstractUser,PermissionsMixin):
+
+    objects = UserManager()
+    email = models.EmailField(('email address'), unique=True)
+    username=models.CharField(max_length=200,unique=False) # changes email to unique and blank to false
     REQUIRED_FIELDS = [] # removes email from REQUIRED_FIELDS
+    USERNAME_FIELD = 'email'
     ROLE_CHOICE = (
         ('Organizers','Organizers'),
         ('Customer','Customer')
