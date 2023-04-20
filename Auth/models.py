@@ -4,12 +4,11 @@ from django.contrib.auth.models import AbstractUser,BaseUserManager,PermissionsM
 # Create your models here.
 
 class UserManager(BaseUserManager):
-    def create_user(self,email,password=None):
+    def create_user(self,email,role,password=None):
         if not email:
             raise ValueError('Users must have an email address')
         email = self.normalize_email(email)
-        user = self.model(email=email)
-
+        user = self.model(email=email,role=role)
         user.set_password(password)
         user.save()
 
@@ -31,7 +30,7 @@ class User(AbstractUser,PermissionsMixin):
     REQUIRED_FIELDS = [] # removes email from REQUIRED_FIELDS
     USERNAME_FIELD = 'email'
     ROLE_CHOICE = (
-        ('Organizers','Organizers'),
+        ('Organizer','Organizer'),
         ('Customer','Customer')
     )
-    role = models.CharField(choices=ROLE_CHOICE,default='Customer',max_length=10)
+    role = models.CharField(choices=ROLE_CHOICE,max_length=10,default='Customer')

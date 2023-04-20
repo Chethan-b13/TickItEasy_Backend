@@ -1,7 +1,7 @@
-from rest_framework import generics,permissions
+from rest_framework import generics,permissions,status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import RegisterSerializer, UserSerializer
+from .serializers import UserSerializer
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -11,12 +11,12 @@ class RegisterApi(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self,request,*args,**kwargs):
-        data = self.request.data
-        email = data['email']
-        password1 = data['password1']
-        password2 = data['password2']
-
         try:
+            data = self.request.data
+            email = data['email']
+            role = data['role']
+            password1 = data['password1']
+            password2 = data['password2']
             if password1 == password2:
                 if User.objects.filter(email=email).exists():
                     return Response({'Error':'User with this email already exist'})
@@ -24,7 +24,7 @@ class RegisterApi(APIView):
                     if len(password1) < 6 :
                         return Response({'Error':"Password Length should be greater than 6."})
                     else:
-                        user = User.objects.create_user(email=email,password=password1)
+                        user = User.objects.create_user(email=email,password=password1,role=role)
                         user.save()
                         return Response({'Success':"User Created SuccessFully."})
             else:
@@ -50,3 +50,13 @@ class MakeAdminApi(generics.GenericAPIView):
             return Response({
                 "ForBidden":"You aren't an admin"
             })
+
+class UserDetails(generics.RetrieveAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    
+    def get(self, request, *args, **kwargs):
+        serializer = self.serializer_class(request.user)
+        return Response(serializer.data,status.HTTP_200_OK)
+    
