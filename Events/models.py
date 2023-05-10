@@ -28,6 +28,7 @@ class Event(models.Model):
     organizer = models.ForeignKey(User, on_delete=models.CASCADE)
     number_of_seats = models.PositiveIntegerField(default=1)
     tickets_booked = models.PositiveIntegerField(default=0)
+    price = models.PositiveIntegerField(default=0)
     slug = models.SlugField(default='',null=False)
 
     def __str__(self):
