@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404 
 
-from rest_framework import generics,permissions
+from rest_framework import generics,permissions,response
 from .models import Event
 from .serializer import EventSerializer
 # Create your views here.
@@ -19,9 +19,6 @@ class CreateEvent(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(organizer=self.request.user)
 
-    # def post(self, request, *args, **kwargs):
-    #     print(request.data['name'],request.data['genre'],request.data['file'])
-    #     return Response({'Success':"Meow"})
 
 
 class EventDetails(generics.RetrieveAPIView):

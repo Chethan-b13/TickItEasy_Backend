@@ -6,7 +6,7 @@ GENRE_OPTIONS = (
     ('Event','Event'),
     ('Comedy','Comedy'),
     ('CollegeEvent','CollegeEvent'),
-    ('WorkShops','WorkShops'),
+    ('WorkShop','WorkShop'),
     ('Webinar','Webinar'),
     ('theater&art','theater&art')
 )
