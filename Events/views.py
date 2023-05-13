@@ -1,6 +1,5 @@
-from django.shortcuts import get_object_or_404 
-
-from rest_framework import generics,permissions,response
+from django.utils.text import slugify
+from rest_framework import generics,permissions
 from .models import Event
 from .serializer import EventSerializer
 # Create your views here.
@@ -17,7 +16,9 @@ class CreateEvent(generics.ListCreateAPIView):
             return [permissions.IsAdminUser()]
 
     def perform_create(self, serializer):
-        serializer.save(organizer=self.request.user)
+        name = self.request.data.get('name')
+        slug = slugify(name)
+        serializer.save(organizer=self.request.user,slug=slug)
 
 
 
