@@ -78,19 +78,24 @@ WSGI_APPLICATION = 'TickItEasy.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'URL': 'postgresql://postgres:5F*gGAF1CGC*da553512aBA1g2E4fG1*@roundhouse.proxy.rlwy.net:23359/railway',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': '5F*gGAF1CGC*da553512aBA1g2E4fG1*',
+        'HOST': 'roundhouse.proxy.rlwy.net',
+        'PORT': "23359",
     }
 }
-
-# DATABASES = {
-#       'default': {
-#           'ENGINE': 'djongo',
-#           'NAME': 'TickItEasy',
-#       }
-#   }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
