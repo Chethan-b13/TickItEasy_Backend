@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    "drf_yasg",
     'corsheaders',
     'Auth',
     'Events',
@@ -162,3 +163,13 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'Auth.User' 
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
+}

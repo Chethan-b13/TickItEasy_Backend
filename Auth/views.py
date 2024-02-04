@@ -1,12 +1,13 @@
 from rest_framework import generics,permissions,status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserSerializer
+from .serializers import UserSerializer, RegisterSerializer
 from django.contrib.auth import get_user_model
+from drf_yasg.utils import swagger_auto_schema
 
 User = get_user_model()
 
-
+@swagger_auto_schema(request_body=RegisterSerializer)
 class RegisterApi(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -32,6 +33,7 @@ class RegisterApi(APIView):
         except Exception as ex:
             return Response({'Error':str(ex)})
 
+@swagger_auto_schema()
 class MakeAdminApi(generics.GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     
@@ -51,6 +53,7 @@ class MakeAdminApi(generics.GenericAPIView):
                 "ForBidden":"You aren't an admin"
             })
 
+@swagger_auto_schema(request_body=UserSerializer)
 class UserDetails(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
