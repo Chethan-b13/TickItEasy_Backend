@@ -9,10 +9,10 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class BookingTicketSerializer(serializers.ModelSerializer):
-    event_name = serializers.CharField(source='event.name')
-    start_time = serializers.CharField(source='event.start_time')
-    mode = serializers.CharField(source='event.mode')
-    venue = serializers.CharField(source='event.venue')
+    event_name = serializers.CharField(source='event.name', required=False)
+    start_time = serializers.CharField(source='event.start_time', required=False)
+    mode = serializers.CharField(source='event.mode', required=False)
+    venue = serializers.CharField(source='event.venue', required=False)
 
     class Meta:
         model = Booking
