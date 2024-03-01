@@ -42,6 +42,11 @@ class Event(models.Model):
         self.tickets_booked += num_tickets
         self.save()
 
+    def save(self,*args, **kwargs):
+        name = self.name.replace(" ","")
+        self.slug = f"{str(self.genre)}-{self.venue}-{name}"
+        return super().save(*args, **kwargs)
+
 class Booking(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

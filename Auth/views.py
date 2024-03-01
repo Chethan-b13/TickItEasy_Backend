@@ -7,10 +7,11 @@ from drf_yasg.utils import swagger_auto_schema
 
 User = get_user_model()
 
-@swagger_auto_schema(request_body=RegisterSerializer)
+
 class RegisterApi(APIView):
     permission_classes = (permissions.AllowAny,)
 
+    @swagger_auto_schema(request_body=RegisterSerializer)
     def post(self,request,*args,**kwargs):
         try:
             data = self.request.data
