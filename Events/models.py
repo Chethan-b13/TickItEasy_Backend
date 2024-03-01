@@ -28,7 +28,7 @@ class Event(models.Model):
     mode = models.CharField(choices=MODE_CHOICES,default='Offline',max_length=8)
     image = models.CharField(max_length=250,blank=True)
     venue = models.CharField(max_length=200)
-    genre = models.CharField(choices=GENRE_OPTIONS,default='Event',max_length=15)
+    genre = models.CharField(choices=GENRE_OPTIONS,default='Event',max_length=25)
     organizer = models.ForeignKey(User, on_delete=models.CASCADE)
     number_of_seats = models.PositiveIntegerField(default=1)
     tickets_booked = models.PositiveIntegerField(default=0)
@@ -43,8 +43,8 @@ class Event(models.Model):
         self.save()
 
     def save(self,*args, **kwargs):
-        name = self.name.replace(" ","")
-        self.slug = f"{str(self.genre)}-{self.venue}-{name}"
+        name = self.name.replace(" ","-")
+        self.slug = f"{str(self.genre)}-{name}"
         return super().save(*args, **kwargs)
 
 class Booking(models.Model):
