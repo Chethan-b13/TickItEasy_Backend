@@ -13,17 +13,18 @@ from drf_yasg.utils import swagger_auto_schema
 @swagger_auto_schema(request_body=EventSerializer)
 class CreateEvent(generics.ListCreateAPIView):
     serializer_class = EventSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        return Event.objects.filter(user=self.request.user)
+        return Event.objects.filter(organizer=self.request.user)
 
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [permissions.AllowAny()]
-        elif self.request.method == 'POST':
-            return [permissions.IsAuthenticated()]
-        else:
-            return [permissions.IsAdminUser()]
+    # def get_permissions(self):
+    #     if self.request.method == 'GET':
+    #         return [permissions.AllowAny()]
+    #     elif self.request.method == 'POST':
+    #         return [permissions.IsAuthenticated()]
+    #     else:
+    #         return [permissions.IsAdminUser()]
 
     def perform_create(self, serializer):
         name = self.request.data.get('name')
