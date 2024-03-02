@@ -12,8 +12,10 @@ from drf_yasg.utils import swagger_auto_schema
 
 @swagger_auto_schema(request_body=EventSerializer)
 class CreateEvent(generics.ListCreateAPIView):
-    queryset = Event.objects.all().order_by('-tickets_booked')
     serializer_class = EventSerializer
+
+    def get_queryset(self):
+        return Event.objects.filter(user=self.request.user)
 
     def get_permissions(self):
         if self.request.method == 'GET':
@@ -35,6 +37,12 @@ class EventDetails(generics.RetrieveAPIView):
     queryset = Event.objects.all()
     serializer_class = HomeDataSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+@swagger_auto_schema(request_body=EventSerializer)
+class AllEvents(generics.ListAPIView):
+    serializer_class = EventSerializer
+    queryset = Event.objects.all()
 
 
 class HomePageData(APIView):
