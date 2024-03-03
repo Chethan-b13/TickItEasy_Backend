@@ -34,15 +34,21 @@ class Event(models.Model):
     tickets_booked = models.PositiveIntegerField(default=0)
     price = models.PositiveIntegerField(default=0)
     slug = models.SlugField(default='',null=False)
+    sold_out = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
     
     def increase_tickets_booked(self, num_tickets):
-        self.tickets_booked += num_tickets
-        self.save()
+        if not self.sold_out:
+            self.tickets_booked += num_tickets
+            if self.tickets_booked >= self.number_of_seats:
+                self.sold_out = True
+            self.save()
 
     def save(self,*args, **kwargs):
+        if self.tickets_booked >= self.number_of_seats:
+            self.sold_out = True
         name = self.name.replace(" ","-")
         self.slug = f"{str(self.genre)}-{name}"
         return super().save(*args, **kwargs)

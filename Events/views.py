@@ -7,6 +7,7 @@ from .models import Event, Booking
 from Auth.models import User
 from .serializer import EventSerializer,BookingTicketSerializer,HomeDataSerializer
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.exceptions import ValidationError
 # Create your views here.
 
 
@@ -33,7 +34,7 @@ class CreateEvent(generics.ListCreateAPIView):
 
 
 @swagger_auto_schema(request_body=HomeDataSerializer)
-class EventDetails(generics.RetrieveAPIView):
+class EventDetails(generics.RetrieveUpdateDestroyAPIView):
     lookup_field='slug'
     queryset = Event.objects.all()
     serializer_class = HomeDataSerializer
@@ -81,6 +82,17 @@ class BookTickets(generics.ListCreateAPIView):
         return Booking.objects.filter(user=self.request.user)
     
     def perform_create(self, serializer):
-        ticket = serializer.save(user=self.request.user)
-        event = ticket.event
-        event.increase_tickets_booked(ticket.num_tickets)
+        try:
+            ticket = serializer.save(user=self.request.user)
+            event = ticket.event
+
+            # Check if the event is sold out
+            if event.number_of_seats <= event.tickets_booked:
+                raise ValidationError("Sold Out!")
+
+            # Update the tickets booked for the event
+            event.increase_tickets_booked(ticket.num_tickets)
+
+        except ValidationError as e:
+            # Handle the ValidationError by sending it in the response with a 500 status code
+            return Response({"error": "Sorry, the event is sold out. No more tickets available."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

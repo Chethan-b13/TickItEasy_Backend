@@ -24,6 +24,7 @@ class HomeDataSerializer(serializers.ModelSerializer):
                 "number_of_seats",
                 "price",
                 "slug",
+                "sold_out"
             ]
 
 class BookingTicketSerializer(serializers.ModelSerializer):
